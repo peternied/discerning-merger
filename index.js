@@ -1,0 +1,79 @@
+const minimatch = require('minimatch');
+const core = require('@actions/core');
+const github = require('@actions/github');
+
+async function run() {
+    try {
+        const token = core.getInput('github-token', { required: true });
+        const allowedAuthors = core.getInput('allowed-authors', { required: true });
+        const allowedFilesPatterns = core.getInput('allowed-files', { required: true });
+
+        const octokit = github.getOctokit(token);
+
+        const { context } = github;
+        const { pull_request, repository } = context.payload;
+
+        const { data: files } = await octokit.pulls.listFiles({
+            owner: repository.owner.login,
+            repo: repository.name,
+            pull_number: pull_request.number
+        });
+
+        const fileNames = files.map(f => f.filename);
+        const allFilesAreAllowed = fileNames.every(fileName =>
+            TARGET_PATTERNS.some(pattern => minimatch(fileName, pattern))
+        );
+
+        if (!allFilesAreAllowed) {
+            const nonMatchingFiles = fileNames.filter(fileName =>
+                !TARGET_PATTERNS.some(pattern => minimatch(fileName, pattern))
+            );
+            core.info(`Some files were not allowed '${nonMatchingFiles.join(', ')}'. Skipping...`);
+            return;
+        }
+
+        const { data: checks } = await octokit.checks.listForRef({
+            owner: repository.owner.login,
+            repo: repository.name,
+            ref: pull_request.head.sha
+        });
+
+        const allChecksPass = checks.check_runs.every(check => check.status === 'completed' && check.conclusion === 'success');
+
+        if (!allChecksPass) {
+            core.info('Not all checks have passed. Skipping...');
+            return;
+        }
+
+        if (!allowedAuthors.includes(pull_request.user.login)) {
+            core.info(`Author '${pull_request.user.login}' not in allowed list. Skipping...`);
+            await octokit.issues.createComment({
+                owner: repository.owner.login,
+                repo: repository.name,
+                issue_number: pull_request.number,
+                body: `This pull request could have been automatically merged by adding the author '${pull_request.user.login}' to discerning-merger list of allowed-authors.`
+            });
+            return;
+        }
+
+        await octokit.pulls.merge({
+            owner: repository.owner.login,
+            repo: repository.name,
+            pull_number: pull_request.number
+        });
+
+        await octokit.issues.createComment({
+            owner: repository.owner.login,
+            repo: repository.name,
+            issue_number: pull_request.number,
+            body: 'Automatically merged by the bot.'
+        });
+
+        core.info('PR merged successfully!');
+
+    } catch (error) {
+        core.setFailed(error.message);
+    }
+}
+
+run();

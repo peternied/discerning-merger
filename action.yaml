@@ -1,0 +1,18 @@
+name: 'Discerning Merger'
+
+description: 'Automatically merges PRs based on author and file patterns.'
+
+inputs:
+  github-token:
+    description: 'GitHub token used for authentication'
+    required: true
+  allowed-authors:
+    description: 'Comma seperated list of authors that are allowed to merge files'
+    required: true
+  allowed-files:
+    description: 'Comma seperated list of files (glob format) that are allowed to be automerged.  Files in the pull request that are not matched prevent merging.'
+    required: true
+
+runs:
+  using: 'node12'
+  main: 'index.js'
