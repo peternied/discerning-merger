@@ -1,6 +1,7 @@
 const minimatch = require("minimatch");
 const core = require("@actions/core");
 const github = require("@actions/github");
+const { Octokit } = require("@octokit/action");
 
 async function run() {
   try {
@@ -16,7 +17,7 @@ async function run() {
       .map((author) => author.trim())
       .filter(Boolean);
 
-    const octokit = github.getOctokit(token);
+    const octokit = new Octokit(token);
 
     const { context } = github;
     const { pull_request, repository } = context.payload;
