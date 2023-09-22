@@ -5,8 +5,8 @@ const github = require('@actions/github');
 async function run() {
     try {
         const token = core.getInput('github-token', { required: true });
-        const allowedAuthors = core.getInput('allowed-authors', { required: true });
-        const allowedFilesPatterns = core.getInput('allowed-files', { required: true });
+        const allowedAuthors = core.getInput('allowed-authors', { required: true }).split(",").map(s => s.trim());
+        const allowedFilesPatterns = core.getInput('allowed-files', { required: true }).split(",").map(s => s.trim());
 
         const octokit = github.getOctokit(token);
 
@@ -21,12 +21,12 @@ async function run() {
 
         const fileNames = files.map(f => f.filename);
         const allFilesAreAllowed = fileNames.every(fileName =>
-            TARGET_PATTERNS.some(pattern => minimatch(fileName, pattern))
+            allowedFilesPatterns.some(pattern => minimatch(fileName, pattern))
         );
 
         if (!allFilesAreAllowed) {
             const nonMatchingFiles = fileNames.filter(fileName =>
-                !TARGET_PATTERNS.some(pattern => minimatch(fileName, pattern))
+                !allowedFilesPatterns.some(pattern => minimatch(fileName, pattern))
             );
             core.info(`Some files were not allowed '${nonMatchingFiles.join(', ')}'. Skipping...`);
             return;
