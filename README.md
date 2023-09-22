@@ -7,10 +7,10 @@ inputs:
     description: 'GitHub token used for authentication'
     required: true
   allowed-authors:
-    description: 'Comma seperated list of authors that are allowed to merge files'
+    description: 'Newline seperated list of authors that are allowed to merge files'
     required: true
   allowed-files:
-    description: 'Comma seperated list of files (glob format) that are allowed to be automerged.  Files in the pull request that are not matched prevent merging.'
+    description: 'Newline seperated list of files (glob format) that are allowed to be automerged.  Files in the pull request that are not matched prevent merging.'
     required: true
 ```
 
@@ -33,8 +33,13 @@ jobs:
       uses: peternied/discerning-merger@v1
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        allowed-authors: "dependabot, opensearch-trigger-bot, peternied"
-        allowed-files: ".gitignore, **/build.gradle"
+        allowed-authors: |
+          dependabot
+          opensearch-trigger-bot
+          peternied
+        allowed-files: |
+          .gitignore
+          **/build.gradle
 ```
 
 # Changelog

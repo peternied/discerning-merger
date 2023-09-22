@@ -5,8 +5,8 @@ const github = require('@actions/github');
 async function run() {
     try {
         const token = core.getInput('github-token', { required: true });
-        const allowedAuthors = core.getInput('allowed-authors', { required: true }).split(",").map(s => s.trim());
-        const allowedFilesPatterns = core.getInput('allowed-files', { required: true }).split(",").map(s => s.trim());
+        const allowedAuthors = core.getInput('allowed-authors', { required: true }).split('\n').map(author => author.trim()).filter(Boolean);
+        const allowedFilesPatterns = core.getInput('allowed-files', { required: true }).split('\n').map(author => author.trim()).filter(Boolean);
 
         const octokit = github.getOctokit(token);
 
