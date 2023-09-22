@@ -3,7 +3,7 @@ name: "Discerning Merger"
 description: "Automatically merges PRs based on author and file patterns."
 
 inputs:
-  github-token:
+  token:
     description: "GitHub token used for authentication"
     required: true
   allowed-authors:

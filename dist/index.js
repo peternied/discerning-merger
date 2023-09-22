@@ -38214,7 +38214,6 @@ const { Octokit } = __nccwpck_require__(1231);
 
 async function run() {
   try {
-    const token = core.getInput("github-token", { required: true });
     const allowedAuthors = core
       .getInput("allowed-authors", { required: true })
       .split("\n")
@@ -38226,7 +38225,7 @@ async function run() {
       .map((author) => author.trim())
       .filter(Boolean);
 
-    const octokit = new Octokit(token);
+    const octokit = new Octokit();
 
     const { context } = github;
     const { pull_request, repository } = context.payload;

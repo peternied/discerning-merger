@@ -32,7 +32,7 @@ jobs:
     - name: Auto merge
       uses: peternied/discerning-merger@v1
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.GITHUB_TOKEN }}
         allowed-authors: |
           dependabot
           opensearch-trigger-bot
