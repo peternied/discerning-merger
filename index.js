@@ -24,8 +24,10 @@ async function run() {
     const { context } = github;
     const { repository } = context.payload;
 
-    const { data: pull_request }  = await octokit.pulls.get({
-      pull_number: pullRequestNumber
+    const { data: pull_request } = await octokit.pulls.get({
+      owner: repository.owner.login,
+      repo: repository.name,
+      pull_number: pullRequestNumber,
     });
 
     const { data: files } = await octokit.pulls.listFiles({
