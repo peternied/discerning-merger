@@ -6,6 +6,9 @@ inputs:
   token:
     description: "GitHub token used for authentication"
     required: true
+  pull-request-number:
+    description: "Pull request number to merge if checks pass"
+    required: true
   allowed-authors:
     description: "Newline seperated list of authors that are allowed to merge files"
     required: true

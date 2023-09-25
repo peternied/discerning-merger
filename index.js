@@ -5,6 +5,9 @@ const { Octokit } = require("@octokit/action");
 
 async function run() {
   try {
+    const pullRequestNumber = core.getInput("pull-request-number", {
+      required: true,
+    });
     const allowedAuthors = core
       .getInput("allowed-authors", { required: true })
       .split("\n")
@@ -19,12 +22,12 @@ async function run() {
     const octokit = new Octokit();
 
     const { context } = github;
-    const { pull_request, repository } = context.payload;
+    const { repository } = context.payload;
 
     const { data: files } = await octokit.pulls.listFiles({
       owner: repository.owner.login,
       repo: repository.name,
-      pull_number: pull_request.number,
+      pull_number: pullRequestNumber,
     });
 
     const fileNames = files.map((f) => f.filename);
