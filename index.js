@@ -92,7 +92,7 @@ async function run() {
       owner: repository.owner.login,
       repo: repository.name,
       issue_number: pull_request.number,
-      body: "Automatically merged by the bot.",
+      body: `This pull request was automatically merged as ${pull_request.user.login} is authorized to merge changes to ${allowedFilesPatterns} files after all CI checks have passed.`,
     });
 
     core.info("PR merged successfully!");
