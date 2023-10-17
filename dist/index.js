@@ -38270,7 +38270,7 @@ async function run() {
     });
 
     const allChecksPass = checks.check_runs.every(
-      (check) => check.status === "completed" && check.conclusion === "success"
+      (check) => check.status === "completed" && (check.conclusion === "success" || check.conclusion === "neutral")
     );
 
     if (!allChecksPass) {

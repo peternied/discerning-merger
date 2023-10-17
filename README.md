@@ -32,7 +32,7 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
 
-    - uses: peternied/discerning-merger@v1
+    - uses: peternied/discerning-merger@v2
       if: steps.find-triggering-pr.outputs.pr-number != null
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
@@ -46,6 +46,9 @@ jobs:
 ```
 
 # Changelog
+
+## v2
+- Checks that are 'neutral' are treated as 'success' for determining if a pull request can be merged.
 
 ## v1
 - Initial Release
