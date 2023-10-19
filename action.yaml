@@ -15,6 +15,9 @@ inputs:
   allowed-files:
     description: "Newline seperated list of files (glob format) that are allowed to be automerged.  Files in the pull request that are not matched prevent merging."
     required: true
+  merge-type:
+    description: "The merge method to use, options are 'merge', 'squash', or 'rebase'; defaults to 'squash'"
+    required: false
 
 runs:
   using: "node16"

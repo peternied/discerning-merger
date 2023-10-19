@@ -19,6 +19,14 @@ async function run() {
       .map((author) => author.trim())
       .filter(Boolean);
 
+    const mergeTypeRaw = core.getInput("merge-type", { required: false});
+    let mergeType;
+    if (!mergeTypeRaw) {
+      mergeType = 'squash';
+    } else {
+      mergeType = mergeTypeRaw;
+    }
+
     const octokit = new Octokit();
 
     const { context } = github;
@@ -86,6 +94,7 @@ async function run() {
       owner: repository.owner.login,
       repo: repository.name,
       pull_number: pull_request.number,
+      merge_method: mergeType
     });
 
     await octokit.issues.createComment({
